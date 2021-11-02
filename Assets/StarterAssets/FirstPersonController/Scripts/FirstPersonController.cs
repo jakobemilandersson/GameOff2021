@@ -33,9 +33,9 @@ namespace StarterAssets
 		public float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
-        [Tooltip("The amount of jumps a player can do in short sucession")]
-        public int TotalJumps = 2;
-        public int currentJumps = 0;
+        [Tooltip("The CD of doublejump")]
+        public float jumpCD = 0.25f;
+
 
         [Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
@@ -220,19 +220,13 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-            float jumpCD = 1.5f;
 
-            //Debug.Log("jumptimer " + JumpTimer);
-            //Debug.Log("TIme " + Time.time);
             if (!Grounded)
             {
-                if (_input.jump && extraJump && (JumpTimer < Time.time + jumpCD))
+                if (_input.jump && extraJump && (JumpTimer + jumpCD < Time.time))
                 {
-                    //Debug.Log("Got extrajump at " + Time.time);
-                    //Debug.Log("Jumptimer+jumpcd = " + (JumpTimer + jumpCD));
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     extraJump = false;
-                    Debug.Log("Extra j8mp");
                 }
             }
             if (Grounded)
