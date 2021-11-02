@@ -9,9 +9,17 @@ public class FireWeapon : MonoBehaviour
     private bool automatic = true;
     [SerializeField]
     private float attackSpeed = 0.5f;
+    [SerializeField]
+    private float maxShootRange = 300f;
+    [SerializeField]
+    private float damage = 100f;   
+    public LayerMask playerLayer;
+    public LayerMask enviromentLayer;
     private bool gunReady = true;
 
     public ParticleSystem muzzle;
+    
+
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +50,17 @@ public class FireWeapon : MonoBehaviour
         Invoke(nameof(ResetGunReady),attackSpeed);
         playerAnimator.SetTrigger("Shoot");
         muzzle.Play();
+        Ray shootRay = new Ray(Camera.main.transform.position,Camera.main.transform.forward);
+        RaycastHit hit;
+        if(Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out hit, maxShootRange, ~(playerLayer)))
+        {
+            if(hit.collider.tag == "Enemy")
+            {
+                Enemy enemyScript = hit.collider.GetComponent<Enemy>();
+                enemyScript.TakeDamage(damage);
+            }
+
+        }
     }
     
     void ResetGunReady()
