@@ -14,10 +14,13 @@ public class FireWeapon : MonoBehaviour
     [SerializeField]
     private float damage = 100f;   
     public LayerMask playerLayer;
-    public LayerMask enviromentLayer;
+
     private bool gunReady = true;
 
     public ParticleSystem muzzle;
+    public GameObject barrel;
+    public GameObject bulletImpactPrefab;
+    public GameObject plasmaBulletPrefab;
     
 
 
@@ -30,34 +33,53 @@ public class FireWeapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Kollar om automatisk, om ja använder vi Getbutton, annars använder vi GetbuttonDown
+        //Vi kallar shoot().
         if(automatic)
         {
             if(Input.GetButton("Fire1")&&gunReady)
             {
-                Shoot();
-
-                
+                Shoot();                
             }               
         }
         else
         {
-
+            if(Input.GetButtonDown("Fire1")&&gunReady)
+            {
+                Shoot();                
+            }   
         }
     }
-    void Shoot()
+    void Shoot() //Kallas från detta script när spelaren skjuter.      
     {
-        gunReady = false;
-        Invoke(nameof(ResetGunReady),attackSpeed);
-        playerAnimator.SetTrigger("Shoot");
-        muzzle.Play();
-        Ray shootRay = new Ray(Camera.main.transform.position,Camera.main.transform.forward);
+        gunReady = false;// gör vapnet oskjutbart
+        Invoke(nameof(ResetGunReady),attackSpeed);//Kallar en reset av gunReady efter viss antal tid attackspeed
+        
+        
+        playerAnimator.SetTrigger("Shoot");//Aktiverar animationen
+        muzzle.Play();//Aktiverar muzzle flash som är ett child på vapnet
+        
+        
+        Ray shootRay = new Ray(Camera.main.transform.position,Camera.main.transform.forward);//Skapar en ray från mitten av kameran
         RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out hit, maxShootRange, ~(playerLayer)))
+        if(Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out hit, maxShootRange, ~(playerLayer)))//Vi kollar om vi träfar nåt på maxShootRange, vi ignorerar spelaren
         {
-            if(hit.collider.tag == "Enemy")
+            if(hit.collider.tag == "Enemy")//Om vi träffar en collider med en fiende tag
             {
-                Enemy enemyScript = hit.collider.GetComponent<Enemy>();
-                enemyScript.TakeDamage(damage);
+                Enemy enemyScript = hit.collider.GetComponent<Enemy>();//Fiender har ett Enemy component där vi sedan tar bort liv från dom.
+                enemyScript.TakeDamage(damage);//Tar skadan av fienden
+            }
+            
+            
+            Instantiate(bulletImpactPrefab,hit.point,Quaternion.LookRotation(transform.position - hit.point));//Vi skapar en bulletimpact effect vid punkten vi träffar
+            
+            //Skapar en kula som effekt om vi är tillräckligt långt bort (bara som cool effekt)
+            Vector3 distanceToHitPoint =  (hit.point-transform.position); //räknar ut hur långt bort träffen är
+            if(distanceToHitPoint.magnitude>10)//Om den är tillräckligt långt bort spawnar vi en kula
+            {
+                GameObject bullet = Instantiate(plasmaBulletPrefab,barrel.transform.position,Quaternion.LookRotation(barrel.transform.position - hit.point));
+                Bullet bulletScript = bullet.GetComponent<Bullet>();//Kulan som spawnas har en komponent bullet
+                bulletScript.TargetBullet(hit.point);//Bullet komponenten får kulan att åka mot positionen vi anger.
             }
 
         }
