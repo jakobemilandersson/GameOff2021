@@ -23,14 +23,21 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+        [Tooltip("Current player stamina")]
+        public float stamina = 100f;
+        [Tooltip("Max stamina")]
+        public float maxStamina = 100f;
 
-		[Space(10)]
+        [Space(10)]
 		[Tooltip("The height the player can jump")]
 		public float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
+        [Tooltip("The amount of jumps a player can do in short sucession")]
+        public int TotalJumps = 2;
+        public int currentJumps = 0;
 
-		[Space(10)]
+        [Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
 		public float JumpTimeout = 0.1f;
 		[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
@@ -62,6 +69,10 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+        private float currentStamina;
+        //private int currentJumps = 0;
+        private bool extraJump = false;
+        private float JumpTimer;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -132,8 +143,38 @@ namespace StarterAssets
 
 		private void Move()
 		{
-			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            // set target speed based on move speed, sprint speed and if sprint is pressed
+            //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            bool sprinting = false;
+
+            if (_input.sprint)
+            {
+                if (stamina > 0)
+                {
+                    sprinting = true;
+                }
+            }
+
+
+            if (sprinting)
+            {
+                --stamina;
+            }
+            else
+            {
+                if(stamina < maxStamina)
+                {
+                    ++stamina;
+                }
+            }
+
+            float targetSpeed = MoveSpeed;
+
+            if (sprinting)
+            {
+                targetSpeed = SprintSpeed;
+            }
+
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -179,7 +220,22 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-			if (Grounded)
+            float jumpCD = 1.5f;
+
+            //Debug.Log("jumptimer " + JumpTimer);
+            //Debug.Log("TIme " + Time.time);
+            if (!Grounded)
+            {
+                if (_input.jump && extraJump && (JumpTimer < Time.time + jumpCD))
+                {
+                    //Debug.Log("Got extrajump at " + Time.time);
+                    //Debug.Log("Jumptimer+jumpcd = " + (JumpTimer + jumpCD));
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    extraJump = false;
+                    Debug.Log("Extra j8mp");
+                }
+            }
+            if (Grounded)
 			{
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
@@ -193,20 +249,25 @@ namespace StarterAssets
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
+
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-				}
+                    extraJump = true;
+                    JumpTimer = Time.time;
+                }
 
 				// jump timeout
 				if (_jumpTimeoutDelta >= 0.0f)
 				{
 					_jumpTimeoutDelta -= Time.deltaTime;
 				}
+
 			}
 			else
 			{
-				// reset the jump timeout timer
-				_jumpTimeoutDelta = JumpTimeout;
+
+                // reset the jump timeout timer
+                _jumpTimeoutDelta = JumpTimeout;
 
 				// fall timeout
 				if (_fallTimeoutDelta >= 0.0f)
