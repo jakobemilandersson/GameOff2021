@@ -147,6 +147,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 428221900}
   controller: {fileID: 1679218295}
+--- !u!114 &428221903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428221899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98d4132a6f26bc429e14eb2ba587ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAnimator: {fileID: 428221900}
+  automatic: 1
+  attackSpeed: 0.2
 --- !u!1 &542508511
 GameObject:
   m_ObjectHideFlags: 0
