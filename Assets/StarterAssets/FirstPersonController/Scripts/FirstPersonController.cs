@@ -149,27 +149,24 @@ namespace StarterAssets
 		{
             // set target speed based on move speed, sprint speed and if sprint is pressed
             //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			if(sprinting && !_input.sprint) {
+				isFatigued = true;
+			}
+
 			sprinting = false;
 
-            if (_input.sprint)
+            if (_input.sprint && stamina > 0 && !isFatigued)
             {
-                if (stamina > 0 && !isFatigued)
-                {
-                    sprinting = true;
-                }
+                sprinting = true;
             }
 
 
             if (sprinting)
             {
                 --stamina;
-            }
-            else
+            } else if(stamina < maxStamina)
             {
-                if(stamina < maxStamina)
-                {
-                    ++stamina;
-                }
+                ++stamina;
             }
 
 			if (stamina == 0)
