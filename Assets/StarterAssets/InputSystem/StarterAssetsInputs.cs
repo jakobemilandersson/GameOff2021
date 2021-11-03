@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -74,6 +75,14 @@ namespace StarterAssets
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
+			SetCursorState(cursorLocked);
+		}
+		
+		// Since we are now loading in the scene that will create this script the application will already be focused
+		// and we need to set focus when the script has been initalized as well. Or else the cursor will still be visible.
+		private void Start()
+		{
+			Debug.Log("PlayGround Scene Was Loaded!");
 			SetCursorState(cursorLocked);
 		}
 
