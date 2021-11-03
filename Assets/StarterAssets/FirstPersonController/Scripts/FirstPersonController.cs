@@ -27,6 +27,8 @@ namespace StarterAssets
         public float stamina = 100f;
         [Tooltip("Max stamina")]
         public float maxStamina = 100f;
+		[Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
+		public int fatigueThreshold;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -73,6 +75,8 @@ namespace StarterAssets
         //private int currentJumps = 0;
         private bool extraJump = false;
         private float JumpTimer;
+		private bool sprinting = false;
+		private bool isFatigued = false;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -145,11 +149,11 @@ namespace StarterAssets
 		{
             // set target speed based on move speed, sprint speed and if sprint is pressed
             //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
-            bool sprinting = false;
+			sprinting = false;
 
             if (_input.sprint)
             {
-                if (stamina > 0)
+                if (stamina > 0 && !isFatigued)
                 {
                     sprinting = true;
                 }
@@ -167,6 +171,14 @@ namespace StarterAssets
                     ++stamina;
                 }
             }
+
+			if (stamina == 0)
+			{
+				isFatigued = true;
+			} else if (stamina > fatigueThreshold && isFatigued)
+			{
+				isFatigued = false;
+			}
 
             float targetSpeed = MoveSpeed;
 
