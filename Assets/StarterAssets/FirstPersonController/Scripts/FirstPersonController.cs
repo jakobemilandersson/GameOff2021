@@ -23,14 +23,23 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+        [Tooltip("Current player stamina")]
+        public float stamina = 5f;
+        [Tooltip("Max stamina")]
+        public float maxStamina = 5f;
+        [Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
+        public float fatigueTimer = 5f;
 
-		[Space(10)]
+        [Space(10)]
 		[Tooltip("The height the player can jump")]
 		public float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
+        [Tooltip("The CD of doublejump")]
+        public float jumpCD = 0.25f;
 
-		[Space(10)]
+
+        [Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
 		public float JumpTimeout = 0.1f;
 		[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
@@ -62,6 +71,13 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+        private bool extraJump = true;
+        private float _jumpTime;
+		private bool sprinting = false;
+		private bool isFatigued = false;
+        private float fatigueRecharge = 0f;
+		private float _staminaRechargeMultiplier = 1f;
+        private float _fatigueTime;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -132,8 +148,58 @@ namespace StarterAssets
 
 		private void Move()
 		{
-			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            // set target speed based on move speed, sprint speed and if sprint is pressed
+            //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+
+			sprinting = false;
+
+            if (_input.sprint && stamina > 0 && !isFatigued)
+            {
+                sprinting = true;
+            }
+
+
+            if (sprinting)
+            {
+                stamina -= _staminaRechargeMultiplier * Time.deltaTime;
+            } else if(stamina < maxStamina && !isFatigued)
+            {
+                stamina += _staminaRechargeMultiplier * Time.deltaTime;
+            }
+
+            if (isFatigued)
+            {
+                float internalCD = 1f;
+                //Internal CD for the rechargetimer for fatigue. Basically: a CD for your CD. We herd u liek CDs
+                if(_fatigueTime + internalCD < Time.time)
+                {
+                    fatigueRecharge += _staminaRechargeMultiplier * Time.deltaTime;
+                }
+                if(fatigueRecharge >= fatigueTimer)
+                {
+                    // Recharge complete
+                    isFatigued = false;
+                    fatigueRecharge = 0;
+                }
+				stamina += _staminaRechargeMultiplier * Time.deltaTime;
+            }
+
+
+			if (stamina < 0 && !isFatigued)
+			{
+                // Is fatigued
+                // TODO: Add a threshold value so that the player becomes fatigued when ending a sprint below a certain value as well?
+                _fatigueTime = Time.time;
+				isFatigued = true;
+			}
+
+            float targetSpeed = MoveSpeed;
+
+            if (sprinting)
+            {
+                targetSpeed = SprintSpeed;
+            }
+
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -179,7 +245,16 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-			if (Grounded)
+
+            if (!Grounded)
+            {
+                if (_input.jump && extraJump && (_jumpTime + jumpCD < Time.time))
+                {
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    extraJump = false;
+                }
+            }
+            if (Grounded)
 			{
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
@@ -193,20 +268,29 @@ namespace StarterAssets
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
+
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-				}
+                    _jumpTime = Time.time;
+                }
 
 				// jump timeout
 				if (_jumpTimeoutDelta >= 0.0f)
 				{
 					_jumpTimeoutDelta -= Time.deltaTime;
 				}
+
+				if(!extraJump) {
+					// Reset extraJump if it's false since we have now touched ground.
+                    extraJump = true;
+				}
+
 			}
 			else
 			{
-				// reset the jump timeout timer
-				_jumpTimeoutDelta = JumpTimeout;
+
+                // reset the jump timeout timer
+                _jumpTimeoutDelta = JumpTimeout;
 
 				// fall timeout
 				if (_fallTimeoutDelta >= 0.0f)
