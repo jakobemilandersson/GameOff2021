@@ -29,7 +29,6 @@ namespace StarterAssets
         public float maxStamina = 5f;
         [Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
         public float fatigueTimer = 5f;
-        public float fatigueRecharge = 0f;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -74,11 +73,13 @@ namespace StarterAssets
 		private float _terminalVelocity = 53.0f;
         private float currentStamina;
         //private int currentJumps = 0;
-        private bool extraJump = false;
+        private bool extraJump = true;
         private float JumpTimer;
         private float FatigueTimer;
 		private bool sprinting = false;
 		private bool isFatigued = false;
+        private float fatigueRecharge = 0f;
+		private float _staminaRechargeMultiplier = 1f;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -162,33 +163,34 @@ namespace StarterAssets
 
             if (sprinting)
             {
-                stamina -= 1 * Time.deltaTime;
+                stamina -= _staminaRechargeMultiplier * Time.deltaTime;
             } else if(stamina < maxStamina && !isFatigued)
             {
-                stamina += 1 * Time.deltaTime;
+                stamina += _staminaRechargeMultiplier * Time.deltaTime;
             }
 
             if (isFatigued)
             {
-                if(FatigueTimer+1f < Time.time)
+                if(FatigueTimer < Time.time)
                 {
-                    fatigueRecharge += 1 * Time.deltaTime;
+                    fatigueRecharge += _staminaRechargeMultiplier * Time.deltaTime;
                 }
                 if(fatigueRecharge >= fatigueTimer)
                 {
-                    //Debug.Log("Recharge complete");
+                    // Recharge complete
                     isFatigued = false;
-                    stamina = 0;
                     fatigueRecharge = 0;
                 }
+				stamina += _staminaRechargeMultiplier * Time.deltaTime;
             }
 
 
 			if (stamina < 0 && !isFatigued)
 			{
+                // Is fatigued
+				// TODO: Add a threshold value so that the player becomes fatigued when ending a sprint below a certain value as well?
                 FatigueTimer = Time.time;
 				isFatigued = true;
-                //Debug.Log("Fatigued");
 			}
 
             float targetSpeed = MoveSpeed;
@@ -269,7 +271,6 @@ namespace StarterAssets
 
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                    extraJump = true;
                     JumpTimer = Time.time;
                 }
 
@@ -277,6 +278,11 @@ namespace StarterAssets
 				if (_jumpTimeoutDelta >= 0.0f)
 				{
 					_jumpTimeoutDelta -= Time.deltaTime;
+				}
+
+				if(!extraJump) {
+					// Reset extraJump if it's false since we have now touched ground.
+                    extraJump = true;
 				}
 
 			}
