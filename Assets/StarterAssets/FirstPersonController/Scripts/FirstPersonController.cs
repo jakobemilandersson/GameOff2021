@@ -71,15 +71,13 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
-        private float currentStamina;
-        //private int currentJumps = 0;
         private bool extraJump = true;
-        private float JumpTimer;
-        private float FatigueTimer;
+        private float _jumpTime;
 		private bool sprinting = false;
 		private bool isFatigued = false;
         private float fatigueRecharge = 0f;
 		private float _staminaRechargeMultiplier = 1f;
+        private float _fatigueTime;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -171,7 +169,9 @@ namespace StarterAssets
 
             if (isFatigued)
             {
-                if(FatigueTimer < Time.time)
+                float internalCD = 1f;
+                //Internal CD for the rechargetimer for fatigue. Basically: a CD for your CD. We herd u liek CDs
+                if(_fatigueTime + internalCD < Time.time)
                 {
                     fatigueRecharge += _staminaRechargeMultiplier * Time.deltaTime;
                 }
@@ -188,8 +188,8 @@ namespace StarterAssets
 			if (stamina < 0 && !isFatigued)
 			{
                 // Is fatigued
-				// TODO: Add a threshold value so that the player becomes fatigued when ending a sprint below a certain value as well?
-                FatigueTimer = Time.time;
+                // TODO: Add a threshold value so that the player becomes fatigued when ending a sprint below a certain value as well?
+                _fatigueTime = Time.time;
 				isFatigued = true;
 			}
 
@@ -248,7 +248,7 @@ namespace StarterAssets
 
             if (!Grounded)
             {
-                if (_input.jump && extraJump && (JumpTimer + jumpCD < Time.time))
+                if (_input.jump && extraJump && (_jumpTime + jumpCD < Time.time))
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     extraJump = false;
@@ -271,7 +271,7 @@ namespace StarterAssets
 
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                    JumpTimer = Time.time;
+                    _jumpTime = Time.time;
                 }
 
 				// jump timeout
