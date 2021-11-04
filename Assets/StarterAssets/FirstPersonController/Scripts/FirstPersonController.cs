@@ -277,8 +277,12 @@ namespace StarterAssets
 				// jump timeout
 				if (_jumpTimeoutDelta >= 0.0f)
 				{
-                    extraJump = true;
 					_jumpTimeoutDelta -= Time.deltaTime;
+				}
+
+				if(!extraJump) {
+					// Reset extraJump if it's false since we have now touched ground.
+                    extraJump = true;
 				}
 
 			}
