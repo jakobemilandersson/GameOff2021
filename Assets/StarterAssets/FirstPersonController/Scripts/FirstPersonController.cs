@@ -24,11 +24,12 @@ namespace StarterAssets
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
         [Tooltip("Current player stamina")]
-        public float stamina = 100f;
+        public float stamina = 5f;
         [Tooltip("Max stamina")]
-        public float maxStamina = 100f;
-		[Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
-		public int fatigueThreshold;
+        public float maxStamina = 5f;
+        [Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
+        public float fatigueTimer = 5f;
+        public float fatigueRecharge = 0f;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -75,6 +76,7 @@ namespace StarterAssets
         //private int currentJumps = 0;
         private bool extraJump = false;
         private float JumpTimer;
+        private float FatigueTimer;
 		private bool sprinting = false;
 		private bool isFatigued = false;
 
@@ -149,9 +151,6 @@ namespace StarterAssets
 		{
             // set target speed based on move speed, sprint speed and if sprint is pressed
             //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
-			if(sprinting && !_input.sprint) {
-				isFatigued = true;
-			}
 
 			sprinting = false;
 
@@ -163,18 +162,33 @@ namespace StarterAssets
 
             if (sprinting)
             {
-                --stamina;
-            } else if(stamina < maxStamina)
+                stamina -= 1 * Time.deltaTime;
+            } else if(stamina < maxStamina && !isFatigued)
             {
-                ++stamina;
+                stamina += 1 * Time.deltaTime;
             }
 
-			if (stamina == 0)
+            if (isFatigued)
+            {
+                if(FatigueTimer+1f < Time.time)
+                {
+                    fatigueRecharge += 1 * Time.deltaTime;
+                }
+                if(fatigueRecharge >= fatigueTimer)
+                {
+                    //Debug.Log("Recharge complete");
+                    isFatigued = false;
+                    stamina = 0;
+                    fatigueRecharge = 0;
+                }
+            }
+
+
+			if (stamina < 0 && !isFatigued)
 			{
+                FatigueTimer = Time.time;
 				isFatigued = true;
-			} else if (stamina > fatigueThreshold && isFatigued)
-			{
-				isFatigued = false;
+                //Debug.Log("Fatigued");
 			}
 
             float targetSpeed = MoveSpeed;
