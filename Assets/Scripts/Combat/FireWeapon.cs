@@ -19,7 +19,7 @@ public class FireWeapon : MonoBehaviour
     
     private int currentAmmo = 25;
     public LayerMask playerLayer;
-
+    [SerializeField]
     private bool gunReady = true;
 
     //Prefabs and effects
@@ -40,34 +40,46 @@ public class FireWeapon : MonoBehaviour
     void Update()
     {
         //Kollar om automatisk, om ja använder vi Getbutton, annars använder vi GetbuttonDown
-        //Vi kallar shoot().
+        //Vi kallar TryShoot().
         if(automatic)
         {
             if(Input.GetButton("Fire1")&&gunReady&&currentAmmo>0)
             {
-                Shoot();                
+                TryShoot();                
             }               
         }
         else
         {
             if(Input.GetButtonDown("Fire1")&&gunReady&&currentAmmo>0)
             {
-                Shoot();                
+                TryShoot();                
             }   
         }
         
         //Reload, om R klickas, blir vapnet oanvändbart tills animationen är klar.
         if(Input.GetButtonDown("Reload"))
         {
+            TryReload();
+        }
+    }
+
+    void TryReload()
+    {
+        if(gunReady && currentAmmo < maxAmmo)
+        {
             gunReady = false;
             playerAnimator.SetTrigger("Reload");
         }
     }
-    void Shoot() //Kallas från detta script när spelaren skjuter.      
+
+    void TryShoot() //Kallas från detta script när spelaren skjuter.      
     {
-        gunReady = false;// gör vapnet oskjutbart
-        Invoke(nameof(ResetGunReady),attackSpeed);//Kallar en reset av gunReady efter viss antal tid attackspeed
-        currentAmmo -=1;
+        if(gunReady)
+        {
+            gunReady = false;// gör vapnet oskjutbart
+            Invoke(nameof(ResetGunReady),attackSpeed);//Kallar en reset av gunReady efter viss antal tid attackspeed
+            currentAmmo -=1;
+        }
         
         
         playerAnimator.SetTrigger("Shoot");//Aktiverar animationen
