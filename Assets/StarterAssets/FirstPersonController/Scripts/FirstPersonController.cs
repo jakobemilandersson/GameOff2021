@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using TMPro;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -24,11 +26,14 @@ namespace StarterAssets
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
         [Tooltip("Current player stamina")]
-        public float stamina = 5f;
+        public float stamina = 3f;
         [Tooltip("Max stamina")]
-        public float maxStamina = 5f;
+        public float maxStamina = 3f;
         [Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
-        public float fatigueTimer = 5f;
+        public float fatigueTimer = 3f;
+
+        [Tooltip("Reference to the staminaSlider")]
+        public Slider staminaSlider;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -63,6 +68,13 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+
+
+
+        [Header("Debug Tools")]
+        public TextMeshProUGUI debug1;
+        public TextMeshProUGUI debug2;
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -75,7 +87,7 @@ namespace StarterAssets
         private float _jumpTime;
 		private bool sprinting = false;
 		private bool isFatigued = false;
-        private float fatigueRecharge = 0f;
+        private float fatigueRecharge = 0;
 		private float _staminaRechargeMultiplier = 1f;
         private float _fatigueTime;
 
@@ -151,6 +163,9 @@ namespace StarterAssets
             // set target speed based on move speed, sprint speed and if sprint is pressed
             //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
+            debug1.text = "fatiguerecharge: " + fatigueRecharge;
+            debug2.text = "Sprinting: " + sprinting + "\nPlayerspeed: " + _speed;
+
 			sprinting = false;
 
             if (_input.sprint && stamina > 0 && !isFatigued)
@@ -200,6 +215,7 @@ namespace StarterAssets
                 targetSpeed = SprintSpeed;
             }
 
+            staminaSlider.value = stamina;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
