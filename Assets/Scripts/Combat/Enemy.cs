@@ -27,7 +27,13 @@ public class Enemy : MonoBehaviour
         Debug.Log("I took damage");
         currentHealth -= damage;
         if(currentHealth<0)
-            Debug.Log("I died");
+            Die();
+            
+    }
+    private void Die()
+    {
+        Debug.Log("I died");
+        Destroy(gameObject);
     }
 
     void GiveDamage(GameObject target)
@@ -40,7 +46,6 @@ public class Enemy : MonoBehaviour
         if(collidingObjectRoot.tag == "Player")
         {
             float _attackTime = Time.time;
-            Debug.Log("[OnCollisionStay] other: " + collidingObjectRoot.name + " | " + collidingObjectRoot.tag + " ~ " + _attackTime);
             collidingObjectRoot.GetComponent<PlayerHealth>().DecrementHealth(damage);
             lastAttack = _attackTime;
         }
@@ -51,7 +56,6 @@ public class Enemy : MonoBehaviour
         if(collidingObjectRoot.tag == "Player" && lastAttack + attackSpeed <= Time.time)
         {
             float _attackTime = Time.time;
-            Debug.Log("[OnCollisionStay] other: " + collidingObjectRoot.name + " | " + collidingObjectRoot.tag + " ~ " + _attackTime);
             collidingObjectRoot.GetComponent<PlayerHealth>().DecrementHealth(damage);
             lastAttack = _attackTime;
         }
