@@ -842,9 +842,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUI, Assembly-CSharp
-        m_MethodName: OnExitButton
+      - m_Target: {fileID: 1604623710}
+        m_TargetAssemblyTypeName: SettingsUI, Assembly-CSharp
+        m_MethodName: OnSaveButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1381,8 +1381,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7bc553112f0c194b82d2e3665942634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mouseSensitivity: 0
+  MainMenuSceneName: MenuScreen
   mouseSensitivySlider: {fileID: 581580412}
   mouseSensitivityInput: {fileID: 86888443}
+  minMouseSensitivty: 0.1
+  maxMouseSensitivity: 5
+  defaultMouseSensitivity: 1
 --- !u!114 &1604623711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1553,9 +1558,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUI, Assembly-CSharp
-        m_MethodName: OnExitButton
+      - m_Target: {fileID: 1604623710}
+        m_TargetAssemblyTypeName: SettingsUI, Assembly-CSharp
+        m_MethodName: OnBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
