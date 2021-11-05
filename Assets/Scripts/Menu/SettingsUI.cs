@@ -22,7 +22,7 @@ public class SettingsUI : MonoBehaviour
     #region Mouse Sensitivity
     public Slider mouseSensitivySlider;
     public TMP_InputField mouseSensitivityInput;
-    public float minMouseSensitivty = 0.1f;
+    public float minMouseSensitivty = 0.01f;
     public float maxMouseSensitivity = 5f;
     public float defaultMouseSensitivity = 1f;
     #endregion
@@ -57,14 +57,15 @@ public class SettingsUI : MonoBehaviour
     
     public void OnMouseSensitivityInput()
     {
-        float _value = minMouseSensitivty; // Default is 1f, used if we can't parse
+        float _value = defaultMouseSensitivity;
         float.TryParse(mouseSensitivityInput.text, out _value);
         if(_value > maxMouseSensitivity)
         {
             _value = maxMouseSensitivity;
             mouseSensitivityInput.text = _value.ToString();
         }
-        _value = Mathf.Round(_value * 100f) / 100f; // round it to 2DP (e.g 1.2312312312 -> 1.23)
+        _value = Mathf.Round(_value * 1000f) / 1000f; // round it to 3DP (e.g 1.2312312312 -> 1.231)
+        Debug.Log("new value: " + _value.ToString());
         mouseSensitivySlider.value = _value;
         _mouseSensitivity = _value;
     }
@@ -84,6 +85,8 @@ public class SettingsUI : MonoBehaviour
     public void OnSaveButton()
     {
         PlayerPrefs.SetFloat(PlayerPrefsKeys.mouseSensitivity.ToString(), _mouseSensitivity);
+        // Now go back to main menu
+        SceneManager.LoadScene(MainMenuSceneName);
     }
 
     public void OnBackButton()

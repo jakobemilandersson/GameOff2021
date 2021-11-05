@@ -220,7 +220,7 @@ MonoBehaviour:
   m_CharacterValidation: 3
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 3
+  m_CharacterLimit: 4
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   MainMenuSceneName: MenuScreen
   mouseSensitivySlider: {fileID: 581580412}
   mouseSensitivityInput: {fileID: 86888443}
-  minMouseSensitivty: 0.1
+  minMouseSensitivty: 0.01
   maxMouseSensitivity: 5
   defaultMouseSensitivity: 1
 --- !u!114 &1604623711
