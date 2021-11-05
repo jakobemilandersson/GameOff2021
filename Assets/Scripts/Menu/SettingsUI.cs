@@ -52,22 +52,10 @@ public class SettingsUI : MonoBehaviour
 
     public void OnMouseSensitivitySlider()
     {
-        mouseSensitivityInput.text = mouseSensitivySlider.value.ToString();
-    }
-    
-    public void OnMouseSensitivityInput()
-    {
-        float _value = defaultMouseSensitivity;
-        float.TryParse(mouseSensitivityInput.text, out _value);
-        if(_value > maxMouseSensitivity)
-        {
-            _value = maxMouseSensitivity;
-            mouseSensitivityInput.text = _value.ToString();
-        }
-        _value = Mathf.Round(_value * 1000f) / 1000f; // round it to 3DP (e.g 1.2312312312 -> 1.231)
-        Debug.Log("new value: " + _value.ToString());
-        mouseSensitivySlider.value = _value;
+        float _value = Mathf.Round(mouseSensitivySlider.value * 100f) / 100f; // round it to 2DP (e.g 1.2312312312 -> 1.23)
         _mouseSensitivity = _value;
+        mouseSensitivySlider.value = _value;
+        mouseSensitivityInput.text = _value.ToString();
     }
 
     public void OnMouseSensitivityInputEnd()
@@ -76,10 +64,16 @@ public class SettingsUI : MonoBehaviour
         float.TryParse(mouseSensitivityInput.text, out _value);
         if(_value < minMouseSensitivty)
         {
-            mouseSensitivityInput.text = minMouseSensitivty.ToString();
-            mouseSensitivySlider.value = minMouseSensitivty;
-            _mouseSensitivity = minMouseSensitivty;
+            _value = minMouseSensitivty;
+        } else if(_value > maxMouseSensitivity)
+        {
+            _value = maxMouseSensitivity;
+            mouseSensitivityInput.text = _value.ToString();
         }
+        _value = Mathf.Round(_value * 1000f) / 1000f; // round it to 3DP (e.g 1.2312312312 -> 1.231)
+        mouseSensitivityInput.text = _value.ToString();
+        mouseSensitivySlider.value = _value;
+        _mouseSensitivity = _value;
     }
 
     public void OnSaveButton()
