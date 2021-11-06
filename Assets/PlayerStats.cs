@@ -6,14 +6,18 @@ using StarterAssets;
 public class PlayerStats : MonoBehaviour
 {
 
-    private float _defaultSpeed;
+    [Header("Movement")]
+	[Tooltip("Move speed of the character in m/s")]
+    public float defaultMoveSpeed = 4f;
+	[Tooltip("Sprint speed of the character in m/s")]
+    public float sprintMultiplier = 1.5f;
+    [Space(10)]
+	[Tooltip("The height the player can jump")]
+    public float defaultJumpHeight = 1.2f;
 
     public FirstPersonController _FirstPersonController;
 
-
-    void Start() {
-        _defaultSpeed = _FirstPersonController.GetDefaultSpeed();    
-    }
+    #region Speed Upgrade
 
     public void SetSpeedMulitplier(float _multiplier, float _duration)
     {
@@ -24,11 +28,34 @@ public class PlayerStats : MonoBehaviour
 
     void ResetSpeedMultiplier()
     {
-        UpdatePlayerControllerSpeed(_defaultSpeed);
+        UpdatePlayerControllerSpeed(defaultMoveSpeed);
     }
 
     void UpdatePlayerControllerSpeed(float _speed)
     {
         _FirstPersonController.MoveSpeed = _speed;
     }
+
+    #endregion
+
+    #region Jump Upgrade
+    
+    public void SetJumpHeigthMulitplier(float _multiplier, float _duration)
+    {
+        float _jumpHeight = _FirstPersonController.JumpHeight * _multiplier;
+        UpdatePlayerControllerJumpHeigth(_jumpHeight);
+        Invoke("ResetJumpHeigthMultiplier", _duration);
+    }
+
+    void ResetJumpHeigthMultiplier()
+    {
+        UpdatePlayerControllerJumpHeigth(defaultJumpHeight);
+    }
+
+    void UpdatePlayerControllerJumpHeigth(float _jumpHeight)
+    {
+        _FirstPersonController.JumpHeight = _jumpHeight;
+    }
+
+    #endregion
 }

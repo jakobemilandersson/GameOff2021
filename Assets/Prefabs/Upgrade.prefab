@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SPEED
+  m_Text: unkown
 --- !u!1 &2273398184302201867
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +92,6 @@ GameObject:
   - component: {fileID: 8172479636931336579}
   - component: {fileID: 6554417535858803569}
   - component: {fileID: 8606716000915659671}
-  - component: {fileID: 2212527899080285889}
   m_Layer: 0
   m_Name: Upgrade
   m_TagString: Untagged
@@ -194,18 +193,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2212527899080285889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2273398184302201867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9429b2faf10741443ae7e4886b03c59a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2530607314052010855
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +271,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SPEED
+  m_Text: unkown
 --- !u!1 &8933184211023619369
 GameObject:
   m_ObjectHideFlags: 0
