@@ -49,7 +49,11 @@ namespace StarterAssets
 		
 		public void OnGameMenu()
 		{
-			GameManager._instance.UpdateIsPaused();
+			bool _isPaused = GameManager._instance.UpdateIsPaused();
+			// Unlock cursor if paused and lock it if not.
+			SetCursorState(!_isPaused);
+			// Set cursor visible true if paused else false
+			Cursor.visible = _isPaused;
 		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
