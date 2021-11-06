@@ -22,6 +22,12 @@ public class Enemy : MonoBehaviour
         Debug.Log("I took damage");
         currentHealth -= damage;
         if(currentHealth<0)
-            Debug.Log("I died");
+            Die();
+            
+    }
+    private void Die()
+    {
+        Debug.Log("I died");
+        Destroy(gameObject);
     }
 }
