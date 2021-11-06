@@ -80,6 +80,7 @@ namespace StarterAssets
 
 		// player
 		public float _speed;
+		private float _defaultSpeed;
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
@@ -103,6 +104,7 @@ namespace StarterAssets
 
 		private void Awake()
 		{
+			_defaultSpeed = MoveSpeed;
 			// get a reference to our main camera
 			if (_mainCamera == null)
 			{
@@ -343,5 +345,11 @@ namespace StarterAssets
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 		}
+		
+		public float GetDefaultSpeed()
+		{
+			return _defaultSpeed; 
+		}
 	}
+
 }
