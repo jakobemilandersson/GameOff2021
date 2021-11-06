@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("[GiveDamage] target: " + target.name);
     }
 
-    private void OnCollisionEnter(Collision other) {
+    private void OnTriggerEnter(Collider other) {
         GameObject collidingObjectRoot = other.gameObject.transform.root.gameObject;
         if(collidingObjectRoot.tag == "Player")
         {
@@ -51,7 +51,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay(Collision other) {
+    private void OnTriggerStay(Collider other) {
         GameObject collidingObjectRoot = other.gameObject.transform.root.gameObject;
         if(collidingObjectRoot.tag == "Player" && lastAttack + attackSpeed <= Time.time)
         {

@@ -6,11 +6,16 @@ using StarterAssets;
 
 public class Upgrade : MonoBehaviour
 {
+    [Tooltip("Value of upgrade power.")]
     public float _value;
     [Tooltip("Duration of upgrade.")]
     public float _duration;
     [Tooltip("Text to show on upgrade object.")]
     public string _text;
+    [Tooltip("If Upgrade object should reappear X second after pickup.")]
+    public bool respawnOnPickup = false;
+    [Tooltip("Number of seconds after pickup it should reappear again.")]
+    public float respawnTimer = 5f;
     private float _rotationSpeed = 100f;
 
     void Start() 
@@ -39,8 +44,19 @@ public class Upgrade : MonoBehaviour
     {
         ApplyUpgradeEffect(_player);
 
-        // Destroy the root
-        Destroy(this.transform.root.gameObject);
+        if(!respawnOnPickup)
+        {
+            // Destroy the root
+            Destroy(this.transform.root.gameObject);
+        } else {
+            gameObject.SetActive(false);
+            Invoke("SetActive", respawnTimer);
+        }
+    }
+
+    void SetActive()
+    {
+        gameObject.SetActive(true);
     }
 
     public virtual void ApplyUpgradeEffect(GameObject _player) 

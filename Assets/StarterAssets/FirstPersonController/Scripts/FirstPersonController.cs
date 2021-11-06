@@ -115,6 +115,9 @@ namespace StarterAssets
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 
+			// try fetch and set of player settings
+			TryFetchAndSetPlayerSettings();
+
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
@@ -348,6 +351,14 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		private void TryFetchAndSetPlayerSettings()
+		{
+			if(PlayerPrefs.HasKey(PlayerPrefsKeys.mouseSensitivity.ToString()))
+        {
+            RotationSpeed = PlayerPrefs.GetFloat(PlayerPrefsKeys.mouseSensitivity.ToString());
+        }
 		}
 	}
 
