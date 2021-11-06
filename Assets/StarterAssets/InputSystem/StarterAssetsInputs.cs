@@ -46,6 +46,11 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+		
+		public void OnGameMenu()
+		{
+			GameManager._instance.UpdateIsPaused();
+		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
 #endif
