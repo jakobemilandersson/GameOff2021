@@ -46,6 +46,15 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+		
+		public void OnGameMenu()
+		{
+			bool _isPaused = GameManager._instance.UpdateIsPaused();
+			// Unlock cursor if paused and lock it if not.
+			SetCursorState(!_isPaused);
+			// Set cursor visible true if paused else false
+			Cursor.visible = _isPaused;
+		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
 #endif
