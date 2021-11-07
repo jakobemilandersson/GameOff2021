@@ -39,6 +39,9 @@ public class FireWeapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Dont do anything if game is paused
+        if(GameManager._instance.isPaused) return;
+
         //Kollar om automatisk, om ja använder vi Getbutton, annars använder vi GetbuttonDown
         //Vi kallar TryShoot().
         if(automatic)

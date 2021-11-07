@@ -131,6 +131,9 @@ namespace StarterAssets
 
 		private void Update()
 		{
+			// Dont do anything if game is paused
+			if(GameManager._instance.isPaused) return;
+
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
