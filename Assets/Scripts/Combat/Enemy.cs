@@ -9,6 +9,10 @@ public class Enemy : MonoBehaviour
     public float maxHealth = 200;
     public float currentHealth = 5;
     public Slider healthBarSlier;
+
+    public Image healthBarFillImage;
+    public Color maxHealthColor;
+    public Color noHealthColor;
     void Start()
     {
         currentHealth = maxHealth;
@@ -35,7 +39,9 @@ public class Enemy : MonoBehaviour
 
     private void SetHealthBarSlider()
     {
-        healthBarSlier.value = CalculateHealthPercentage();
+        float healthPercentage = CalculateHealthPercentage();
+        healthBarSlier.value = healthPercentage;
+        healthBarFillImage.color = Color.Lerp(noHealthColor, maxHealthColor, healthPercentage / 100);
     }
 
     private float CalculateHealthPercentage()
