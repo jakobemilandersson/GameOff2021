@@ -18,16 +18,6 @@ public class GameManager : MonoBehaviour
     public UnityEvent gameMenuEvent; // TODO: Do it better, this feels super hacky...
     #endregion
 
-    #region Spawn Points
-    [SerializeField]
-    private GameObject[] _spawnPointsEnemy;
-    private string _spawnPointEnemyTagName = "SpawnPointEnemy";
-    #endregion
-
-    #region Enemy Prefabs
-    public GameObject _cubeEnemyPrefab;
-    #endregion
-
     void Awake() {
         if(_instance != null && _instance != this)
         {
@@ -37,16 +27,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Start() {
-        // Find all enemy spawn points located on map
-        _spawnPointsEnemy = GameObject.FindGameObjectsWithTag(_spawnPointEnemyTagName);
-
-        foreach(GameObject _spawnPoint in _spawnPointsEnemy)
-        {
-            SpawnEnemy(_cubeEnemyPrefab, _spawnPoint);
-        }
-    }
-
+    #region Paus Menu Logic
     public bool UpdateIsPaused()
     {
         isPaused = !isPaused;
@@ -65,15 +46,6 @@ public class GameManager : MonoBehaviour
 
         return isPaused;
     }
-
-    #region Spawn Logic
-    public void SpawnEnemy(GameObject _enemyPrefab, GameObject _spawnPoint)
-    {
-        Instantiate(_enemyPrefab, _spawnPoint.transform.position, Quaternion.identity);
-    }
-    #endregion
-
-    #region Paus Menu Logic
 
     public void QuitGame()
     {
