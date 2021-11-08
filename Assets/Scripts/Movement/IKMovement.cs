@@ -44,7 +44,7 @@ public class IKMovement : MonoBehaviour
             Physics.Raycast(bodyTargets[i].position, bodyTargets[i].TransformDirection(Vector3.down), out hit, Mathf.Infinity);
             lastBodyTargetsDistance[i] = hit.distance;
         }
-        Offset = new Vector3(0, stepLength-0.05f, 0);
+        Offset = new Vector3(0, stepLength, 0);
     }
 
     void FollowGround() {
