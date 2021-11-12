@@ -11,9 +11,9 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
 
     public Collider playerCollider;
-    [Tooltip("Reference to the staminaSlider")]
+    [Tooltip("Reference to the healthSlider")]
     public Slider healthSlider;
-    [Tooltip("Reference to the staminaHealth")]
+    [Tooltip("Reference to the healthHealth")]
     public TextMeshProUGUI healthText;
 
     void Start() {
