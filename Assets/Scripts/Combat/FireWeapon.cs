@@ -91,8 +91,9 @@ public class FireWeapon : MonoBehaviour
         
         Ray shootRay = new Ray(Camera.main.transform.position,Camera.main.transform.forward);//Skapar en ray från mitten av kameran
         RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out hit, maxShootRange, ~(playerLayer)))//Vi kollar om vi träfar nåt på maxShootRange, vi ignorerar spelaren
+        if(Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out hit, maxShootRange, ~playerLayer))//Vi kollar om vi träfar nåt på maxShootRange, vi ignorerar spelaren
         {
+            Debug.Log("hit: " + hit.collider.tag);
             if(hit.collider.tag == "Enemy")//Om vi träffar en collider med en fiende tag
             {
                 Enemy enemyScript = hit.collider.GetComponent<Enemy>();//Fiender har ett Enemy component där vi sedan tar bort liv från dom.
