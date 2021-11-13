@@ -52,6 +52,8 @@ public class Enemy : MonoBehaviour
     private float CalculateHealthPercentage()
     {
         return ((float)currentHealth / (float)maxHealth) * 100;
+    }
+    
     void GiveDamage(GameObject target)
     {
         Debug.Log("[GiveDamage] target: " + target.name);
