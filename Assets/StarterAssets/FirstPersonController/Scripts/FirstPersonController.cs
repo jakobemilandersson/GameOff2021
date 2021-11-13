@@ -17,10 +17,10 @@ namespace StarterAssets
 	public class FirstPersonController : MonoBehaviour
 	{
 		[Header("Player")]
-		[Tooltip("Move speed of the character in m/s")]
-		public float MoveSpeed = 4.0f;
-		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 6.0f;
+		[HideInInspector]
+		public float MoveSpeed; // "Move speed of the character in m/s"
+		[HideInInspector]
+		public float SprintMultiplier; // Sprint speed of the character in m/s
 		[Tooltip("Rotation speed of the character")]
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -28,7 +28,7 @@ namespace StarterAssets
         [Tooltip("Current player stamina")]
         public float stamina = 3f;
         [Tooltip("Max stamina")]
-        public float maxStamina = 3f;
+        public float maxStamina; // Max stamina
         [Tooltip("At what minimum value of 'stamina' the player should be able to sprint again.")]
         public float fatigueTimer = 3f;
 
@@ -36,8 +36,8 @@ namespace StarterAssets
         public Slider staminaSlider;
 
         [Space(10)]
-		[Tooltip("The height the player can jump")]
-		public float JumpHeight = 1.2f;
+		[HideInInspector]
+		public float JumpHeight; // The height the player can jump
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
         [Tooltip("The CD of doublejump")]
@@ -121,6 +121,12 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			// get base player stats
+			PlayerStats _playerStats = GetComponent<PlayerStats>();
+			MoveSpeed = _playerStats.defaultMoveSpeed;
+			SprintMultiplier = _playerStats.sprintMultiplier;
+			JumpHeight = _playerStats.defaultJumpHeight;
 		}
 
 		private void Update()
@@ -218,7 +224,7 @@ namespace StarterAssets
 
             if (sprinting)
             {
-                targetSpeed = SprintSpeed;
+                targetSpeed *= SprintMultiplier;
             }
 
             staminaSlider.value = stamina;
@@ -358,4 +364,5 @@ namespace StarterAssets
         }
 		}
 	}
+
 }

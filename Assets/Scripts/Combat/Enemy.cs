@@ -13,8 +13,13 @@ public class Enemy : MonoBehaviour
     public Image healthBarFillImage;
     public Color maxHealthColor;
     public Color noHealthColor;
+    public int damage = 10;
+    public float attackSpeed = 0.6f;
+    [SerializeField]
+    private float lastAttack;
     void Start()
     {
+        lastAttack = Time.time;
         currentHealth = maxHealth;
     }
 
@@ -47,5 +52,28 @@ public class Enemy : MonoBehaviour
     private float CalculateHealthPercentage()
     {
         return ((float)currentHealth / (float)maxHealth) * 100;
+    void GiveDamage(GameObject target)
+    {
+        Debug.Log("[GiveDamage] target: " + target.name);
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        GameObject collidingObjectRoot = other.gameObject.transform.root.gameObject;
+        if(collidingObjectRoot.tag == "Player")
+        {
+            float _attackTime = Time.time;
+            collidingObjectRoot.GetComponent<PlayerHealth>().DecrementHealth(damage);
+            lastAttack = _attackTime;
+        }
+    }
+
+    private void OnTriggerStay(Collider other) {
+        GameObject collidingObjectRoot = other.gameObject.transform.root.gameObject;
+        if(collidingObjectRoot.tag == "Player" && lastAttack + attackSpeed <= Time.time)
+        {
+            float _attackTime = Time.time;
+            collidingObjectRoot.GetComponent<PlayerHealth>().DecrementHealth(damage);
+            lastAttack = _attackTime;
+        }
     }
 }

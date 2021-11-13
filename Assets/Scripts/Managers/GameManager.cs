@@ -8,10 +8,15 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
+    #region Instance Variable
     public static GameManager _instance;
+    #endregion
+
+    #region Pause Menu
     public bool isPaused = false;
     public GameObject pauseMenu;
     public UnityEvent gameMenuEvent; // TODO: Do it better, this feels super hacky...
+    #endregion
 
     void Awake() {
         if(_instance != null && _instance != this)
@@ -22,6 +27,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Paus Menu Logic
     public bool UpdateIsPaused()
     {
         isPaused = !isPaused;
@@ -50,10 +56,7 @@ public class GameManager : MonoBehaviour
     {
         // TODO: Set up an "ExitGameEvent" instead of manually fireing "GameMenu"-InputEvent?
         gameMenuEvent.Invoke();
-
-        // // Reset InputSystem to Fixed update
-        // InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsInFixedUpdate;
-        // Time.timeScale = 1;
-        // pauseMenu.SetActive(false);
     }
+
+    #endregion
 }
