@@ -57,6 +57,7 @@ public class PlayerHealth : MonoBehaviour
         {
           health = 0;  
             // TODO: Game Over Screen?
+            GameManager._instance.OnEndGame();
         }
         healthSlider.value = health;
         healthText.text = health.ToString();
