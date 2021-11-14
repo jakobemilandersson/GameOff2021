@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using StarterAssets;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -15,7 +16,11 @@ public class GameManager : MonoBehaviour
     #region Pause Menu
     public bool isPaused = false;
     public GameObject pauseMenu;
-    public UnityEvent gameMenuEvent; // TODO: Do it better, this feels super hacky...
+    #endregion
+
+    #region Player
+    public GameObject _player;
+    private StarterAssetsInputs _inputs;
     #endregion
 
     void Awake() {
@@ -25,6 +30,10 @@ public class GameManager : MonoBehaviour
         } else {
             _instance = this;
         }
+
+        // Get Player
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _inputs = _player.GetComponent<StarterAssetsInputs>();
     }
 
     #region Paus Menu Logic
@@ -54,8 +63,7 @@ public class GameManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        // TODO: Set up an "ExitGameEvent" instead of manually fireing "GameMenu"-InputEvent?
-        gameMenuEvent.Invoke();
+        _inputs.OnGameMenu();
     }
 
     #endregion
