@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class IKMovement : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class IKMovement : MonoBehaviour
     public float smoothness = 0.5f;
     public float timeBetweenLegMovement = 0.1f;
 
+    public AudioSource spiderAudioSource;
+    public AudioClip[] individualLegSounds;
+
+    private int nbIndividualLegSounds;
     private Vector3[] defaultLegPositions;
     private Vector3[] lastLegPositions;
     private float[] lastBodyTargetsDistance;
@@ -23,11 +28,12 @@ public class IKMovement : MonoBehaviour
     private int nbLegs;
     private float stepLength = 1f;
     private Vector3 Offset;
+    private Random random = new Random();
 
-    private bool grounded = false;
     void Start()
     {
         Offset = new Vector3(0, stepLength, 0);
+        nbIndividualLegSounds = individualLegSounds.Length;
         nbLegs = legTargets.Length;
         defaultLegPositions = new Vector3[nbLegs];
         lastLegPositions = new Vector3[nbLegs];
@@ -75,6 +81,10 @@ public class IKMovement : MonoBehaviour
                 legMoving[i] = true;
                 lastLegPositions[i] = Vector3.Lerp(lastLegPositions[i], bodyTargets[i].position - Offset, smoothness);
 
+                var randomNumber = random.Next(0, nbIndividualLegSounds - 1);
+
+                AudioClip randomLegSound = individualLegSounds[randomNumber];
+                spiderAudioSource.PlayOneShot(randomLegSound, 0.3f);
                 yield return new WaitForSeconds(timeBetweenLegMovement);
             }
         }
