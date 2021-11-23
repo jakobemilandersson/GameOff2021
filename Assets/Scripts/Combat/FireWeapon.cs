@@ -27,8 +27,10 @@ public class FireWeapon : MonoBehaviour
     public GameObject barrel;
     public GameObject bulletImpactPrefab;
     public GameObject plasmaBulletPrefab;
-    
 
+    public AudioSource playerAudioSource;
+    public AudioClip shootingSound;
+    public AudioClip shootingWallImpactSound;
 
     // Start is called before the first frame update
     void Start()
@@ -81,6 +83,7 @@ public class FireWeapon : MonoBehaviour
         {
             gunReady = false;// gör vapnet oskjutbart
             Invoke(nameof(ResetGunReady),attackSpeed);//Kallar en reset av gunReady efter viss antal tid attackspeed
+            playerAudioSource.PlayOneShot(shootingSound);
             currentAmmo -=1;
         }
         
@@ -102,7 +105,7 @@ public class FireWeapon : MonoBehaviour
             
             
             Instantiate(bulletImpactPrefab,hit.point,Quaternion.LookRotation(transform.position - hit.point));//Vi skapar en bulletimpact effect vid punkten vi träffar
-            
+            playerAudioSource.PlayOneShot(shootingWallImpactSound, 0.5f);
             //Skapar en kula som effekt om vi är tillräckligt långt bort (bara som cool effekt)
             Vector3 distanceToHitPoint =  (hit.point-transform.position); //räknar ut hur långt bort träffen är
             if(distanceToHitPoint.magnitude>5)//Om den är tillräckligt långt bort spawnar vi en kula

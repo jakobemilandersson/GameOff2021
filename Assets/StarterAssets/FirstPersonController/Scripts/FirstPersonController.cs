@@ -68,10 +68,13 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+		public AudioSource playerAudioSource;
+		public AudioClip playerWalkingSound;
+		public AudioClip playerRunningSound;
+		public AudioClip playerJumpSound;
+		public AudioClip playerJumpImpactSound;
 
-
-
-        [Header("Debug Tools")]
+		[Header("Debug Tools")]
         public TextMeshProUGUI debug1;
         public TextMeshProUGUI debug2;
 
@@ -90,7 +93,7 @@ namespace StarterAssets
         private float fatigueRecharge = 0;
 		private float _staminaRechargeMultiplier = 1f;
         private float _fatigueTime;
-
+		private bool isMoving = false;
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
@@ -100,6 +103,10 @@ namespace StarterAssets
 		private GameObject _mainCamera;
 
 		private const float _threshold = 0.01f;
+
+		private bool isPlayingWalkingSound = false;
+		private bool isPlayingJumpingSound = false;
+		private bool lastGrounded = true;
 
 		private void Awake()
 		{
@@ -146,6 +153,7 @@ namespace StarterAssets
 
 		private void GroundedCheck()
 		{
+			lastGrounded = Grounded;
 			// set sphere position, with offset
 			Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
 			Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
@@ -178,6 +186,9 @@ namespace StarterAssets
             debug1.text = "fatiguerecharge: " + fatigueRecharge;
             debug2.text = "Sprinting: " + sprinting + "\nPlayerspeed: " + _speed;
 
+			if (!lastGrounded && Grounded)
+				playerAudioSource.PlayOneShot(playerJumpImpactSound);
+
 			sprinting = false;
 
             if (_input.sprint && stamina > 0 && !isFatigued)
@@ -193,6 +204,29 @@ namespace StarterAssets
             {
                 stamina += _staminaRechargeMultiplier * Time.deltaTime;
             }
+
+			if(sprinting && Grounded) {
+				if (isPlayingWalkingSound) {
+					playerAudioSource.Stop();
+					isPlayingWalkingSound = false;
+				}
+
+				if (!playerAudioSource.isPlaying)
+					playerAudioSource.PlayOneShot(playerRunningSound, 0.5f);
+
+            } else if(isMoving && Grounded) {
+				if (!isPlayingWalkingSound)
+					playerAudioSource.Stop();
+
+				if (!playerAudioSource.isPlaying) {
+					playerAudioSource.PlayOneShot(playerWalkingSound, 0.5f);
+					isPlayingWalkingSound = true;
+				}
+			} else {
+				if (playerAudioSource.isPlaying & Grounded & lastGrounded)
+					playerAudioSource.Stop();
+				isPlayingWalkingSound = false;
+			}
 
             if (isFatigued)
             {
@@ -264,8 +298,13 @@ namespace StarterAssets
 			if (_input.move != Vector2.zero)
 			{
 				// move
+				isMoving = true;
 				inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
 			}
+			else
+			{
+				isMoving = false;
+            }
 
 			// move the player
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
@@ -273,10 +312,10 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-
             if (!Grounded)
             {
-                if (_input.jump && extraJump && (_jumpTime + jumpCD < Time.time))
+				isPlayingJumpingSound = false;
+				if (_input.jump && extraJump && (_jumpTime + jumpCD < Time.time))
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     extraJump = false;
@@ -296,7 +335,12 @@ namespace StarterAssets
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
-
+					if (!isPlayingJumpingSound) {
+						playerAudioSource.Stop();
+						isPlayingJumpingSound = true;
+						playerAudioSource.PlayOneShot(playerJumpSound, 0.2f);
+					}
+					
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _jumpTime = Time.time;
