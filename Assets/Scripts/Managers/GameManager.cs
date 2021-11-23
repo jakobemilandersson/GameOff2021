@@ -88,6 +88,8 @@ public class GameManager : MonoBehaviour
 
     public void OnMainMenu()
     {
+        // Reset timeScale to 1, so we dont mess up anything in future scenes.
+        Time.timeScale = 1;
         SceneManager.LoadScene("MenuScreen"); // TODO: Use index instead when Build Settings is finalized
     }
 
