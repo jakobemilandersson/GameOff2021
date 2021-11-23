@@ -55,6 +55,14 @@ namespace StarterAssets
 			// Set cursor visible true if paused else false
 			Cursor.visible = _isPaused;
 		}
+		
+		public void OnEndMenu()
+		{
+			// Unlock cursor.
+			SetCursorState(false);
+			// Set cursor visible true
+			Cursor.visible = true;
+		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
 #endif
