@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         Debug.Log("I died");
-        Destroy(gameObject);
+        Destroy(gameObject.transform.root);
     }
 
     private void SetHealthBarSlider()
