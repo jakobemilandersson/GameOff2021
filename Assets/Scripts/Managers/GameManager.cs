@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using StarterAssets;
 using UnityEngine.SceneManagement;
+using TMPro;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
     #region Player
     public GameObject _player;
     private StarterAssetsInputs _inputs;
+    [SerializeField]
+    private int _points;
+    public TextMeshProUGUI pointsText;
     #endregion
 
     void Awake() {
@@ -39,6 +43,8 @@ public class GameManager : MonoBehaviour
         // Get Player
         _player = GameObject.FindGameObjectWithTag("Player");
         _inputs = _player.GetComponent<StarterAssetsInputs>();
+
+        _points = 0;
     }
 
     #region Paus Menu Logic
@@ -94,4 +100,11 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    public void IncrementPoints(int value)
+    {
+        _points += value;
+    }
+
+    public int GetPoints() { return _points; }
 }

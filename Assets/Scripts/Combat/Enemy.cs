@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     public Color maxHealthColor;
     public Color noHealthColor;
     public int damage = 10;
+    public int points = 10;
     public float attackSpeed = 0.6f;
     [SerializeField]
     private float lastAttack;
@@ -30,7 +31,6 @@ public class Enemy : MonoBehaviour
     }
     public void TakeDamage(float damage)
     {
-        Debug.Log("I took damage");
         currentHealth -= damage;
         if(currentHealth<=0)
             Die();
@@ -38,8 +38,8 @@ public class Enemy : MonoBehaviour
     }
     private void Die()
     {
-        Debug.Log("I died");
-        Destroy(gameObject);
+        GameManager._instance.IncrementPoints(points);
+        Destroy(gameObject.transform.root.gameObject);
     }
 
     private void SetHealthBarSlider()
@@ -52,11 +52,6 @@ public class Enemy : MonoBehaviour
     private float CalculateHealthPercentage()
     {
         return ((float)currentHealth / (float)maxHealth) * 100;
-    }
-    
-    void GiveDamage(GameObject target)
-    {
-        Debug.Log("[GiveDamage] target: " + target.name);
     }
 
     private void OnTriggerEnter(Collider other) {
