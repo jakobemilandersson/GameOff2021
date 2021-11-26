@@ -104,8 +104,6 @@ public class GameManager : MonoBehaviour
     public void IncrementPoints(int value)
     {
         _points += value;
-        // TODO: remove everything below
-        pointsText.text = _points.ToString();
     }
 
     public int GetPoints() { return _points; }
