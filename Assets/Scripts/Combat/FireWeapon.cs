@@ -5,6 +5,7 @@ using UnityEngine;
 public class FireWeapon : MonoBehaviour
 {
     public Animator playerAnimator; 
+    public Animator weaponAnimator;
     [SerializeField]
     private bool automatic = true;
 
@@ -72,6 +73,7 @@ public class FireWeapon : MonoBehaviour
         {
             gunReady = false;
             playerAnimator.SetTrigger("Reload");
+            weaponAnimator.SetTrigger("Reload");
         }
     }
 
